@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/single_choice"
+        app:showAsAction="never"
+        android:title="单选"/>
+    <item
+        android:id="@+id/more_choice"
+        app:showAsAction="never"
+        android:title="多选"/>
+    <item
+        android:id="@+id/refresh"
+        app:showAsAction="never"
+        android:title="刷新"/>
+
+</menu>

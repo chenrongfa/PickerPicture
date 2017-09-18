@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000"
+    >
+  <RelativeLayout
+      android:background="#434343"
+      android:gravity="center_vertical"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize">
+    <Button
+        android:background="#00ff00"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:text="使用"
+        android:textSize="16sp"
+        android:layout_width="60dp"
+        android:layout_height="40dp"/>
+
+  </RelativeLayout>
+
+
+  <xchihuo.cn.pickerpicture.view.MoveImageView
+      android:id="@+id/iv_cut"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"/>
+</LinearLayout>
+
+
