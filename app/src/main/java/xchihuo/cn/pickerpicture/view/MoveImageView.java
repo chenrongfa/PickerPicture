@@ -11,7 +11,6 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.graphics.Region;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -109,7 +108,7 @@ public class MoveImageView extends ImageView {
 
 			}
 
-			canvas.clipPath(path2, Region.Op.DIFFERENCE);
+			canvas.clipPath(path1);
 			Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			paint.setStyle(Paint.Style.STROKE);
 			paint.setStrokeWidth(0);
