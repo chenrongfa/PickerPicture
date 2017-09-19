@@ -22,6 +22,7 @@ public class PictureCutActivity extends AppCompatActivity {
 		if(!file.exists()){
 			file.mkdirs();
 		}
+
 		iv_cut.setPath(imagepath);
 
 		iv_cut.invalidate();

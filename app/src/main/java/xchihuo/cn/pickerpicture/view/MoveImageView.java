@@ -10,13 +10,16 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region;
 import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.Scroller;
@@ -33,7 +36,7 @@ import java.io.File;
  */
 
 @SuppressLint("AppCompatCustomView")
-public class MoveImageView extends ImageView {
+public class MoveImageView extends ImageView implements GestureDetector.OnGestureListener{
 	public MoveImageView(Context context) {
 		this(context, null);
 	}
@@ -51,10 +54,16 @@ public class MoveImageView extends ImageView {
 			file.mkdirs();
 		}
 		scroller=new Scroller(context);
+     gestureDetector=new GestureDetector(context,  this);
+		int identifier = getResources().getIdentifier("status_bar_height",
+				"dimen", "android");
 
 
+		status_bar_height = getResources().getDimensionPixelSize
+				(identifier);
 	}
-
+	int status_bar_height;
+  private GestureDetector gestureDetector;
 	@Override
 	public void computeScroll() {
 		if (scroller.computeScrollOffset()){
@@ -106,6 +115,8 @@ public class MoveImageView extends ImageView {
 				moveX = (int) (rectF.left-dx);
 				moveY = (int) (rectF.top-dy);
 
+
+
 			}
 
 			canvas.clipPath(path1);
@@ -156,38 +167,68 @@ public class MoveImageView extends ImageView {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
-		float y = event.getY();
-		float x = event.getX();
-		switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN:
-				if (!scroller.isFinished()) {
-					scroller.abortAnimation();
-					return false;
-				}
-				lastX = x;
-				lastY = y;
+		return gestureDetector.onTouchEvent(event);
+	}
+
+	Region region = new Region();
+	@Override
+	public boolean onDown(MotionEvent event) {
+		//是否点中图片getRawX getRawY 是屏幕左上角的位置所以
+		if (bitmap!=null) {
+			Log.e("density", "onDown: "+density);
+			region.set(moveX, moveY, moveX + bitmap.getWidth(), (int) (moveY + bitmap.getHeight()+40*density+status_bar_height));
+			Rect bounds = region.getBounds();
+			Log.e("density", "onDown: "+bounds.toString() );
+			Log.e("density", "event.getRawX(): "+event.getRawX() );
+			Log.e("density", "event.getRawY(): "+event.getRawY());
+			Log.e("density", "event.getRawY(): "+event.getRawY());
+			Log.e("density", "moveY + bitmap.getHeight() "+moveY + bitmap.getHeight());
+			Log.e("density", "moveY + 40*density "+40*density);
+			Log.e("density", "moveY + status_bar_height "+status_bar_height);
+			if (region.contains((int)event.getRawX(),(int)event.getRawY())) {
+
+
 				return true;
 
-			case MotionEvent.ACTION_MOVE:
-				Log.e("tt", "onTouchEvent: ");
-				int dx = (int) (x - lastX);
-				int dy = (int) (y - lastY);
-				Log.e("tt", "onTouchEvent: dx" + dx);
-				Log.e("tt", "onTouchEvent: dy" + dy);
-
-
-				if (onMoveListener != null) {
-					onMoveListener.moveListener(moveX, moveY);
-				}
-				scroller.startScroll(moveX, moveY, dx, dy, 500);
-				invalidate();
-
-				break;
-			case MotionEvent.ACTION_UP:
-
-				break;
+			}
 		}
-		return super.onTouchEvent(event);
+
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		return false;
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float
+			distanceY) {
+		Log.e("fling", "onTouchEvent:distanceX "+distanceX);
+		Log.e("fling", "onTouchEvent:distanceX "+distanceY);
+
+		//scroller.startScroll(moveX, moveY, (int)-distanceX, (int)-distanceY, 200);
+		moveX+=-distanceX; moveY+=(int)-distanceY;
+		invalidate();
+		return false;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e) {
+
+	}
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float
+			velocityY) {
+
+
+		return false;
 	}
 
 	public interface OnMoveListener {
@@ -213,5 +254,15 @@ public class MoveImageView extends ImageView {
 		width=imageViewWH[0];
 		height=imageViewWH[1];
 		rectF.set(width/8,height/8,width*7/8,height*7/8);
+	}
+	float density;
+	@Override
+	public void onWindowFocusChanged(boolean hasWindowFocus) {
+
+		super.onWindowFocusChanged(hasWindowFocus);
+		if (hasWindowFocus){
+
+			density = getResources().getDisplayMetrics().density;
+		}
 	}
 }
