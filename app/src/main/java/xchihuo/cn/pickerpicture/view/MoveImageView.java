@@ -173,7 +173,7 @@ public class MoveImageView extends ImageView implements GestureDetector.OnGestur
 	Region region = new Region();
 	@Override
 	public boolean onDown(MotionEvent event) {
-		//是否点中图片getRawX getRawY 是屏幕左上角的位置所以
+		//是否点中图片getRawX getRawY 是屏幕左上角的位置1所以
 		if (bitmap!=null) {
 			Log.e("density", "onDown: "+density);
 			region.set(moveX, moveY, moveX + bitmap.getWidth(), (int) (moveY + bitmap.getHeight()+40*density+status_bar_height));
